@@ -1,0 +1,23 @@
+<a href="/offices/new">Create new :0</a>
+
+{{#each offices}}
+  <br />
+  {{this.address}} |
+  {{this.phone}} | 
+  {{this.email}} | 
+  {{this.country.name}}
+  <a href="/offices/{{this.id}}/edit">Edit</a>
+  <button onclick="deleteCall({{this.id}})">Delete</button>
+{{/each}}
+
+
+<script>
+    async function deleteCall(id){
+        const response = await fetch(`http://localhost:3000/offices/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    }
+</script>

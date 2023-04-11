@@ -1,0 +1,3 @@
+GraphQL — это язык запросов для API-интерфейсов и среда, в которой они выполняются.
+
+SDL — Schema Definition Language

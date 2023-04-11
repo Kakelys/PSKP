@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       
+
+        <script>
+
+            function VideoFetch() 
+            {
+                console.log('GET video')
+                fetch('http://localhost:5000/static/rebecca.mp4', 
+                {
+                    method: 'GET', mode: "no-cors",
+                    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                })
+                .then(response => {return response.blob();})
+                .then((blob)=>{
+                    const newObjectUrl = URL.createObjectURL( blob );
+                    video.src = newObjectUrl;
+                });
+            }
+
+            function CssFetch() 
+            {
+                console.log('GET css')
+                fetch('http://localhost:5000/static/style.css', 
+                {
+                    method: 'GET', mode: "no-cors",
+                    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                })
+                .then(response => {return response.blob();})
+                .then(blob => {
+                    const newObjectUrl = URL.createObjectURL( blob );
+                    test_css.href = newObjectUrl;
+
+                });
+            }
+
+            function XmlFetch() 
+            {
+                console.log('GET css')
+                fetch('http://localhost:5000/static/file.xml', 
+                {
+                    method: 'GET', mode: "no-cors",
+                    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                })
+                .then(response => {return response.text();})
+                .then(data => {
+                    //const newObjectUrl = URL.createObjectURL( blob );
+                    test_xml.innerHTML = data;
+                });
+            }
+
+            
+            VideoFetch();
+            CssFetch();
+            XmlFetch();
+           
+        </script>
+
+        <link rel="stylesheet" id="test_css">
+        <script id="test_script" src="http://localhost:5000/static/script.js"></script>
+        
+    </head>
+    <body>
+        
+        <video id="video" autoplay muted loop></video>
+        <a href="http://localhost:5000/static/file.docx">DOCX</a>
+        <img id="test_img" width="500" height="300" src="http://localhost:5000/static/pictured.png">
+        <div class="test">some text to test css, should be red</div>
+        <div id="test_xml"></div>
+    </body>
+</html>

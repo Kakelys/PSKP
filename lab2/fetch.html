@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8' />
+        <title></title>
+    </head>
+    <body>
+        <h3>fetch request</h3>
+        <div id="result">
+            <script type="text/javascript">
+
+                async function fet()
+                {
+                    let response = await fetch("http://localhost:5000/api/name");
+                    data = await response.text();
+                    result.innerText = data;
+                }
+    
+                fet();
+            </script>
+        </div>
+    </body>
+</html>

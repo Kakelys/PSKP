@@ -1,0 +1,23 @@
+<form >
+    <label for="name">Имя:</label>
+    <input type="text" id="name" name="name" value="{{country.name}}" required>
+    <input type="button" onClick="putCall({{country.id}})" value="Отправить">
+</form>
+
+<script>
+    async function putCall(id){
+        let json = JSON.stringify({
+            id: id,
+            name: document.getElementById('name').value
+          });
+          console.log(`http://localhost:3000/countries/${id}`)
+        const response = await fetch(`http://localhost:3000/countries`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: json
+        });
+    
+    }
+</script>

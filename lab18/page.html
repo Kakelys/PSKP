@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>14-03</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<body>
+    <button  onclick="cls()">Clear</button>
+    <div id="get_result"></div>
+
+    <br>
+    <div class="container">
+        <label for="req_xyz">XYZ:</label><br>
+        <input type="text" id="req_xyz"><br><br>
+        <button onclick="get('teachers')">teachers</button>
+        <button  onclick="delete_by_xyz('teachers')">Delete by xyz</button>
+    </div>
+    
+    <!--
+    <button onclick="get('faculties')">fac</button>
+    <button onclick="get('pulpits')">pulp</button>
+    <button onclick="get('auditoriumstypes')">auditorium_type</button>
+    <button onclick="get('auditoriums')">auditoriums</button>
+    <button onclick="get('subjects')">subject</button>
+    <button onclick="get('xyz_fac')">fac xyz pulp</button>
+    <button onclick="get('xyz_aud')">aud_type xyz aud</button>
+    -->
+
+
+
+    <script>
+
+        function cls(){
+            get_result.innerHTML = "";
+        }
+
+        var jsonArray;
+        var templateObject;
+
+
+        function get(action) {
+            console.log('get');
+
+            let act = action;
+            
+            if(action == 'xyz_fac'){
+                action  = `faculty/${req_xyz.value}/pulpits`
+            }
+
+            if(action == 'xyz_aud'){
+                action  = `auditoriumstypes/${req_xyz.value}/auditoriums`
+            }
+
+            fetch(`http://localhost:5000/api/${action}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                console.log(data);
+                jsonArray = data;
+                templateObject = data[0];
+                console.log(templateObject);
+                get_result.innerHTML = "";
+                var counter = 0;
+
+                var keys;
+                var values;
+
+                data.forEach(el => {
+                    keys = Object.keys(el);
+                    values = Object.values(el);
+
+                    var table_value = "";
+
+                    for (var i = 0; i < keys.length; i++) {
+                        table_value += keys[i] + ": "
+                            + `<input type="text" value='${values[i]}' id='${keys[i]}${counter}'/> `;
+                    }
+                    if(act != 'xyz_fac' && act != 'xyz_aud' ){
+                        table_value += `<button onclick="delete_element('${action}', '${values[0]}')">Delete</button>`
+                        table_value += `<button onclick="update_element('${action}', '${counter}')">Update</button>`
+                    }
+                    get_result.innerHTML += table_value + "<br/>";
+                    counter++;
+                })
+
+
+                if(act != 'xyz_fac' && act != 'xyz_aud' ){
+                    for (var i = 0; i < keys.length; i++) {
+                    get_result.innerHTML += keys[i] + ": "
+                        + `<input type="text" id='${keys[i]}${counter}'/> `;
+                    }
+
+                    get_result.innerHTML += `<button onclick="insert_element('${action}', '${counter}')">Insert</button>`
+                }
+                get_result.innerHTML += "<br/>";
+                counter++;
+            })
+        }
+
+        function delete_element(table, id) {
+            console.log("DELETE");
+
+            fetch(`http://localhost:5000/api/${table}/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json'
+                }
+
+            }).then(res => {
+                return res.json();
+            }).then((data) => {
+                console.log(data);
+                get_result.innerHTML = "";
+                get_result.innerHTML = JSON.stringify(data);
+            })
+        }
+
+        function update_element(action, num) {
+            console.log("UPDATE");
+
+            console.log(jsonArray[num]);
+
+            var updObject = jsonArray[num];
+            var updKeys = Object.keys(updObject);
+            var updValues = Object.values(updObject);
+
+            for (var i = 0; i < updKeys.length; i++) {
+                updValues[i] = document.getElementById(updKeys[i] + num).value;
+                console.log(updValues[i]);
+                updObject[updKeys[i]] = updValues[i];
+            }
+            console.log(updObject);
+
+            fetch(`http://localhost:5000/api/${action}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json'
+                },
+                body: JSON.stringify(updObject)
+            }).then(res => {
+                return res.json();
+            }).then((data) => {
+                console.log(data);
+                get_result.innerHTML = "";
+                get_result.innerHTML = JSON.stringify(data);
+            })
+        }
+
+        function insert_element(action, num) {
+            console.log("INSERT");
+
+            var insertObject = jsonArray[num-1];
+            var updKeys = Object.keys(insertObject);
+            var updValues = Object.values(insertObject);
+
+            for (var i = 0; i < updKeys.length; i++) {
+                updValues[i] = document.getElementById(updKeys[i] + num).value;
+                console.log(updValues[i]);
+                insertObject[updKeys[i]] = updValues[i];
+            }
+            console.log(insertObject);
+
+            fetch(`http://localhost:5000/api/${action}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json'
+                },
+                body: JSON.stringify(insertObject)
+            }).then(res => {
+                return res.json();
+            }).then((data) => {
+                console.log(data);
+                get_result.innerHTML = "";
+                get_result.innerHTML = JSON.stringify(data);
+            })
+        }
+
+        function delete_by_xyz(action) {
+            console.log("DELETE by xyz");
+            if(!req_xyz.value){
+                get_result.innerHTML = "Enter value";
+                return;
+            }
+
+            fetch(`http://localhost:5000/api/${action}/${req_xyz.value}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": 'application/json',
+                    "Accept": 'application/json'
+                }k
+
+            }).then(res => {
+                return res.json();
+            }).then((data) => {
+                console.log(data);
+                get_result.innerHTML = "";
+                get_result.innerHTML = JSON.stringify(data);
+            })
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>

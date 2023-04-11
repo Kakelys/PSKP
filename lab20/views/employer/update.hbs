@@ -1,0 +1,25 @@
+<form>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" value="{{employer.address}}" required />
+    <label for="name">Phone:</label>
+    <input type="text" id="phone" name="phone" value="{{employer.phone}}" required />
+    <label for="name">Email:</label>
+    <input type="text" id="email" name="email" value="{{employer.email}}" required />
+
+    <input type="button" onClick="putCall({{employer.id}}, {{employer.office_id}})" value="Отправить" />
+</form>
+
+<script>
+    async function putCall(id, officeId){ let json = JSON.stringify({ 
+        id: id, 
+        name:document.getElementById('name').value,
+        phone:document.getElementById('phone').value,
+        email:document.getElementById('email').value,
+        officeId: officeId
+    });
+    const response = await fetch(`http://localhost:3000/employers/${id}`, { 
+            method: 'PUT', headers: {
+            'Content-Type': 'application/json' }, body: json 
+        });
+    }
+</script>

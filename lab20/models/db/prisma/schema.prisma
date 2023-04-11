@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model country {
+  id                                   Int      @id @default(autoincrement())
+  name                                 String
+  office                               office[]
+  routesFrom route[]  @relation("route_from_country_idTocountry")
+  routesTo   route[]  @relation("route_to_country_idTocountry")
+}
+
+model customer {
+  id      Int       @id @default(autoincrement())
+  name    String
+  phone   String
+  request request[]
+}
+
+model employer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  phone     String
+  email     String
+  office_id Int?
+  office    office?   @relation(fields: [office_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  request   request[]
+}
+
+model office {
+  id         Int        @id @default(autoincrement())
+  address    String
+  phone      String
+  email      String
+  country_id Int?
+  employer   employer[]
+  country    country?   @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model request {
+  id          Int       @id @default(autoincrement())
+  customer_id Int?
+  employer_id Int?
+  route_id    Int?
+  req_date    DateTime  @db.Date
+  customer    customer? @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employer    employer? @relation(fields: [employer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  route       route?    @relation(fields: [route_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model route {
+  id                                     Int       @id @default(autoincrement())
+  from_country_id                        Int?
+  to_country_id                          Int?
+  price                                  Decimal   @db.Money
+  request                                request[]
+  countryFrom country?  @relation("route_from_country_idTocountry", fields: [from_country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  countryTo   country?  @relation("route_to_country_idTocountry", fields: [to_country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

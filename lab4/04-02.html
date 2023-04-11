@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+    <div id="result"></div>
+    <button class="btn btn-outline-info mt-2" onclick="Get()">
+      GET
+    </button>
+    <div class="container">
+        <div class="row mt-1">
+            <input type="text" class="col-2" id="ID" placeholder="Идентификтар">
+        </div>
+        <div class="row mt-1">
+            <input type="text" class="col-2" placeholder="Имя" id="Name"/>
+        </div>
+        <div class="row mt-1">
+            <input type="text" class="col-2" placeholder="Дата рождения" id="BirthDate" />
+            <input type="text" class="col-3 ms-1" placeholder="Идентификатор" id="DelID" />
+        </div>
+        <div class="row mt-1">
+            <button class="col-2 btn btn-primary" onclick="Post()">POST</button>
+            <button class="col-2 ms-1 btn btn-danger" onclick="Delete()">DELETE</button>
+        </div>
+        <div class="row mt-1">
+          <button class="col-2 btn btn-secondary " onclick="Put()">Put</button>
+      </div>
+    </div>
+  </div>
+    <script type="text/javascript">
+      function Get() 
+      {
+        console.log('GET')
+            fetch('http://localhost:5000/api/db', 
+            {
+                method: 'GET', mode: "no-cors",
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            })
+            .then(response => {return response.json();})
+            .then((data)=>{
+              console.log('data: ', data);
+              result.innerHTML = '';
+              data.forEach(el => {
+                result.innerHTML += (el.id + ', ' + el.name + ' ' + el.bday + '</br>');});
+              });
+      }
+
+      async function Post() 
+      {
+            console.log('POST')
+            fetch('http://localhost:5000/api/db', 
+            {
+                method: 'POST', mode: "no-cors",
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({id: ID.value, name: Name.value, bday: BirthDate.value})
+            })
+            .then(response => {return response.json();})
+            .then(data => console.log('POST.data', data));
+      }
+
+      async function Put() {
+        console.log('PUT')
+            fetch('http://localhost:5000/api/db', 
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({id: ID.value, name: Name.value, bday: BirthDate.value})
+            });
+      }
+
+      async function Delete() 
+      {
+        console.log('DELETE')
+            fetch('http://localhost:5000/api/db', 
+            {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+                body: JSON.stringify({id: ID.DelID})
+            });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8' />
+        <title></title>
+    </head>
+    <body>
+        <div id="result">
+
+        </div>
+        <script type="text/javascript">
+                result.innerHTML = '';
+                const d = Date.now();
+
+                for(let i = 0; i < 20; i++){
+                    fetch(`http://localhost:5000/factNext?k=${i}`, {
+                        method: 'GET', mode:"no-cors",
+                        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+                    }
+                    )
+                    .then(response => {return response.json();})
+                    .then(pdata => {
+                        console.log(pdata.toString());
+                        result.innerHTML += i+1 + '.Result: ' + (Date.now()-d) + '-' + pdata.k + '/' + pdata.fact + '</br>';
+                    });
+                }
+        </script>
+    </body>
+</html>

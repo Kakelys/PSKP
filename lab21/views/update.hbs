@@ -1,0 +1,31 @@
+<script>
+    function sendDelete(id) {
+        console.log('hehe')
+        fetch(`/delete/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(_ => {location.href = '/'})
+    }
+</script>
+
+<div class="container">
+    {{>phones}}
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{phone.name}}" />
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" class="form-control" value="{{phone.phone}}" />
+        </div>
+        <div class="mt-2">
+            <button type="submit" class="btn btn-success">Update</button>
+            <button type="button" class="btn btn-danger" onClick="sendDelete({{phone.id}})">Delete</button>
+            {{#cancel}}{{/cancel}}
+        </div>
+    </form>
+</div>

@@ -1,0 +1,22 @@
+<form>
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" value="{{route.price}}" required />
+
+    <input type="button" onClick="putCall({{route.id}}, {{route.countryFrom.id}}, {{route.countryTo.id}})" value="Отправить" />
+</form>
+
+<script>
+    async function putCall(id, coutryFromId, countryToId){ 
+
+    let json = JSON.stringify({ 
+        id: id,
+        price: document.getElementById('price').value,
+        countryFromId: coutryFromId,
+        countryToId: countryToId
+    });
+    const response = await fetch(`http://localhost:3000/routes/${id}`, { 
+            method: 'PUT', headers: {
+            'Content-Type': 'application/json' }, body: json 
+        });
+    }
+</script>

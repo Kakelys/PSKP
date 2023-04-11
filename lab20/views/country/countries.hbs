@@ -1,0 +1,19 @@
+<a href="/countries/new">Create new :0</a>
+{{#each countries}}
+  <br />
+  {{this.name}}
+  <a href="/countries/{{this.id}}/edit">Edit</a>
+  <button onclick="deleteCall({{this.id}})">Delete</button>
+{{/each}}
+
+
+<script>
+    async function deleteCall(id){
+        const response = await fetch(`http://localhost:3000/countries/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    }
+</script>

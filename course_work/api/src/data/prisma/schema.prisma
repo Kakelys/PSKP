@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model account {
+  id                               Int             @id @default(autoincrement())
+  login                            String          @db.VarChar(255)
+  password_hash                    String
+  password_salt                    String
+  is_admin                         Boolean         @default(false)
+  account_info                     account_info?
+  company                          company[]
+  company_member                   company_member?
+  favorite                         favorite[]
+  messageFromId                    message[]       @relation("message_from_idToaccount")
+  messageToId                      message[]       @relation("message_to_idToaccount")
+  reply                            reply[]
+  token                            token[]
+  vacancy                          vacancy[]
+}
+
+model account_info {
+  id      Int     @id @default(autoincrement())
+  name    String  @db.VarChar(255)
+  age     Int?
+  phone   String? @db.VarChar(255)
+  website String? @db.VarChar(255)
+  about   String?
+  account account @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model company {
+  id             Int              @id @default(autoincrement())
+  owner_id       Int?
+  name           String           @db.VarChar(255)
+  about          String?
+  website        String?          @db.VarChar(255)
+  phone          String?          @db.VarChar(255)
+  account        account?         @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  company_member company_member[]
+  vacancy        vacancy[]
+}
+
+model company_member {
+  account_id Int      @id
+  company_id Int?
+  is_owner   Boolean  @default(false)
+  account    account  @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  company    company? @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model favorite {
+  id         Int      @id @default(autoincrement())
+  account_id Int?
+  vacancy_id Int?
+  date       DateTime @default(now()) @db.Timestamp(6)
+  account    account? @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vacancy    vacancy? @relation(fields: [vacancy_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model message {
+  id                               Int      @id @default(autoincrement())
+  from_id                          Int?
+  to_id                            Int?
+  text                             String
+  date                             DateTime @default(now()) @db.Timestamp(6)
+  accountFromId account? @relation("message_from_idToaccount", fields: [from_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  accountToI   account? @relation("message_to_idToaccount", fields: [to_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model reply {
+  id              Int           @id @default(autoincrement())
+  vacancy_id      Int?
+  account_id      Int?
+  date            DateTime      @default(now()) @db.Timestamp(6)
+  reply_status_id Int?
+  account         account?      @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reply_status    reply_status? @relation(fields: [reply_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vacancy         vacancy?      @relation(fields: [vacancy_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model reply_status {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(255)
+  reply reply[]
+}
+
+model skill {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  vacancy_skill vacancy_skill[]
+}
+
+model token {
+  id         Int      @id @default(autoincrement())
+  account_id Int?
+  token      String
+  date       DateTime @db.Timestamp(6)
+  account    account? @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model vacancy {
+  id            Int             @id @default(autoincrement())
+  owner_id      Int?
+  company_id    Int?
+  title         String          @db.VarChar(255)
+  about         String?
+  salary        String?         @db.VarChar(255)
+  post_date     DateTime        @default(now()) @db.Timestamp(6)
+  is_active     Boolean         @default(true)
+  favorite      favorite[]
+  reply         reply[]
+  company       company?        @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  account       account?        @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vacancy_skill vacancy_skill[]
+}
+
+model vacancy_skill {
+  id         Int      @id @default(autoincrement())
+  vacancy_id Int?
+  skill_id   Int?
+  skill      skill?   @relation(fields: [skill_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vacancy    vacancy? @relation(fields: [vacancy_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

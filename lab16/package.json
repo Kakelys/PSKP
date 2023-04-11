@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "graphql": "15.8",
+    "pg": "^8.8.0"
+  }
+}

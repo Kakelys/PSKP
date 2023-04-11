@@ -1,0 +1,44 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "postgres",
+            "database": "postgres",
+            "username": "postgres",
+            "password": ".Qwerty1%"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "noda_lab",
+            "database": "noda_lab",
+            "username": "postgres",
+            "password": ".Qwerty1%"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "node_coursework",
+            "database": "work_find_coursework",
+            "username": "postgres",
+            "password": ".Qwerty1%"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "noda_db_lab",
+            "database": "noda_bd_lab",
+            "username": "postgres",
+            "password": ".Qwerty1%"
+        }
+    ]
+}

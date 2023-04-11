@@ -1,0 +1,20 @@
+<form>
+    <label for="name">Имя:</label>
+    <input type="text" id="name" name="name" value="{{customer.name}}" required />
+    <label for="name">Phone:</label>
+    <input type="text" id="phone" name="phone" value="{{customer.phone}}" required />
+    <input type="button" onClick="putCall({{customer.id}})" value="Отправить" />
+</form>
+
+<script>
+    async function putCall(id){ let json = JSON.stringify({ 
+        id: id, 
+        name:document.getElementById('name').value,
+        phone:document.getElementById('phone').value
+    });
+    const response = await fetch(`http://localhost:3000/customers/${id}`, { 
+            method: 'PUT', headers: {
+            'Content-Type': 'application/json' }, body: json 
+        });
+    }
+</script>
